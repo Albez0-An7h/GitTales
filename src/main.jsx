@@ -14,7 +14,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/PullRequestData/:username',
-    element: <PersonData username='Albez0-An7h'/>
+    element: <PersonData />
   }
 ])
 
