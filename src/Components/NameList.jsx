@@ -11,6 +11,11 @@ const NameList = () => {
             Batch: "C",
         },
         {
+            Name: "Vedansha Srivastava",
+            userName: "Vedansha07",
+            Batch: "A",
+        },
+        {
             Name: "Arpit Sarang",
             userName: "CodeMaverick-143",
             Batch: "C",
