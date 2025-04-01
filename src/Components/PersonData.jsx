@@ -1,7 +1,7 @@
 import React from 'react';
 import Footer from './Footer';
 import { useParams } from 'react-router-dom';
-import GitHubHeatmap from './GitHubHeatmap';
+import GitHubHeatmap from './GitHubHeatmap'
 import { Link } from 'react-router-dom';
 
 
