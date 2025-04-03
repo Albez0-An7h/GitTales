@@ -88,4 +88,4 @@ GitTales is compatible with modern browsers including:
 - Safari (latest)
 - Edge (latest)
 
-### Favicon by <a href="https://iconscout.com/icons/octocat" class="text-underline font-size-sm" target="_blank">Octocat</a> by <a href="https://iconscout.com/contributors/benjamin-j-sperry" class="text-underline font-size-sm" target="_blank">Benjamin J sperry</a>
+### Favicon <a href="https://iconscout.com/icons/octocat" class="text-underline font-size-sm" target="_blank">Octocat</a> by <a href="https://iconscout.com/contributors/benjamin-j-sperry" class="text-underline font-size-sm" target="_blank">Benjamin J sperry</a>
