@@ -6,6 +6,18 @@ const NameList = () => {
     const [profiles, setProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [avatars, setAvatars] = useState({});
+    
+    // GitHub API token from environment variables
+    const githubToken = import.meta.env.VITE_GITHUB_API_TOKEN;
+    
+    // Headers for GitHub API requests with authorization
+    const githubHeaders = githubToken ? {
+        'Authorization': `token ${githubToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+    } : {
+        'Accept': 'application/vnd.github.v3+json'
+    };
 
     useEffect(() => {
         const fetchProfiles = async () => {
@@ -18,16 +30,62 @@ const NameList = () => {
                 if (error) throw error;
                 
                 setProfiles(data || []);
+                
+                // Fetch GitHub avatars for all profiles with GitHub usernames
+                if (data && data.length > 0) {
+                    fetchGitHubAvatars(data);
+                } else {
+                    setLoading(false);
+                }
             } catch (error) {
                 console.error('Error fetching profiles:', error);
                 setError('Failed to load profiles. Please try again later.');
-            } finally {
                 setLoading(false);
             }
         };
 
         fetchProfiles();
     }, []);
+    
+    const fetchGitHubAvatars = async (profiles) => {
+        try {
+            const avatarPromises = profiles
+                .filter(profile => profile.github_username)
+                .map(async (profile) => {
+                    try {
+                        const response = await fetch(`https://api.github.com/users/${profile.github_username}`, {
+                            headers: githubHeaders
+                        });
+                        
+                        if (response.ok) {
+                            const userData = await response.json();
+                            return { 
+                                username: profile.github_username, 
+                                avatar_url: userData.avatar_url
+                            };
+                        }
+                        return { username: profile.github_username, avatar_url: null };
+                    } catch (error) {
+                        console.error(`Error fetching avatar for ${profile.github_username}:`, error);
+                        return { username: profile.github_username, avatar_url: null };
+                    }
+                });
+
+            const avatarResults = await Promise.all(avatarPromises);
+            
+            // Convert array to object with username as key
+            const avatarMap = avatarResults.reduce((acc, item) => {
+                acc[item.username] = item.avatar_url;
+                return acc;
+            }, {});
+            
+            setAvatars(avatarMap);
+        } catch (error) {
+            console.error('Error fetching GitHub avatars:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -73,10 +131,27 @@ const NameList = () => {
                                         className="flex items-center justify-between px-4"
                                     >
                                         <div className="flex items-center">
-                                            <div className="ml-3">
+                                            {/* GitHub Avatar */}
+                                            <div className="flex-shrink-0 h-12 w-12">
+                                                {avatars[profile.github_username] ? (
+                                                    <img 
+                                                        className="h-12 w-12 rounded-full" 
+                                                        src={avatars[profile.github_username]}
+                                                        alt={`${profile.name}'s avatar`} 
+                                                    />
+                                                ) : (
+                                                    <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                                                        <span className="text-indigo-600 font-semibold">
+                                                            {profile.name.charAt(0)}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            
+                                            <div className="ml-4">
                                                 <p className="text-lg font-medium text-indigo-600">{profile.name}</p>
                                                 <p className="text-sm text-gray-500">
-                                                    @{profile.github_username} · {profile.batch}
+                                                    @{profile.github_username} · <span className="font-medium">Batch: </span>{profile.batch}
                                                 </p>
                                             </div>
                                         </div>

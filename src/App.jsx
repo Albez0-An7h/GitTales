@@ -10,6 +10,7 @@ import ViewProfile from './ViewProfile';
 import { useEffect, useState } from 'react';
 import { supabase } from './supabaseClient';
 import Navigation from './components/Navigation';
+import Footer from './Footer';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -42,18 +43,23 @@ function App() {
 
   return (
     <Router>
-      <Navigation />
-      <Routes>
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/names" element={<NameList />} />
-        <Route path="/view-profile/:userId" element={<ViewProfile />} />
-        <Route path="/commits/:owner/:repo" element={<ViewCommits />} />
-        {/* Add this catch-all route at the end to handle 404s */}
-        <Route path="*" element={<Error404 />} />
-      </Routes>
+      <div className="flex flex-col min-h-screen">
+        <Navigation />
+        <div className="flex-grow">
+          <Routes>
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={<Signin />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/names" element={<NameList />} />
+            <Route path="/view-profile/:userId" element={<ViewProfile />} />
+            <Route path="/commits/:owner/:repo" element={<ViewCommits />} />
+            {/* Add this catch-all route at the end to handle 404s */}
+            <Route path="*" element={<Error404 />} />
+          </Routes>
+        </div>
+        <Footer />
+      </div>
     </Router>
   );
 }
