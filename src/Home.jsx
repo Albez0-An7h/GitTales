@@ -304,7 +304,7 @@ const Home = () => {
                     ) : (
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {pullRequests.map(pr => (
-                                <div key={pr.id} className="bg-white shadow rounded-lg overflow-hidden">
+                                <div key={pr.id} className={`${pr.merged ? 'bg-green-50' : 'bg-white'} shadow rounded-lg overflow-hidden`}>
                                     <div className="px-4 py-5 sm:p-6">
                                         <h3 className="text-lg font-medium text-gray-900 truncate mb-1">
                                             <a 
