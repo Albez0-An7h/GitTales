@@ -12,8 +12,8 @@ const AuthRedirect = () => {
         const checkSession = async () => {
             const { data } = await supabase.auth.getSession();
             setInitialAuthCheckDone(true);
-            // Only redirect if not signed in
-            if (!data.session) {
+            // Only redirect if not signed in and not on signup page
+            if (!data.session && location.pathname !== '/signup') {
                 navigate('/signin');
             }
         };
