@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from './supabaseClient';
 import Navigation from './components/Navigation';
 import Footer from './Footer';
+import AuthRedirect from './components/AuthRedirect';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -45,6 +46,7 @@ function App() {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Navigation />
+        <AuthRedirect />
         <div className="flex-grow">
           <Routes>
             <Route path="/signup" element={<SignUp />} />

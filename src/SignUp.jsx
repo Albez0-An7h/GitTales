@@ -10,6 +10,7 @@ const SignUp = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [signupSuccess, setSignupSuccess] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -38,7 +39,8 @@ const SignUp = () => {
             }
 
             if (data.user) {
-                navigate('/profile'); // Redirect to profile instead of signin
+                setSignupSuccess(true);
+                // Don't redirect immediately, show verification message instead
             }
         } catch (error) {
             setError(error.message);
@@ -46,6 +48,34 @@ const SignUp = () => {
             setLoading(false);
         }
     };
+
+    // If signup was successful, show verification message
+    if (signupSuccess) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+                    <div className="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <h2 className="text-2xl font-bold text-center text-gray-900 mt-4 mb-2">Check your email</h2>
+                        <p className="text-gray-600 mb-4">
+                            We've sent a verification link to <span className="font-semibold">{formData.email}</span>
+                        </p>
+                        <p className="text-gray-600 mb-6">
+                            Please click the link in your email to verify your account, then return to sign in.
+                        </p>
+                        <Link
+                            to="/signin"
+                            className="w-full block text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Go to Sign In
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
