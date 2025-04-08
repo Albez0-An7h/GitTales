@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate, Link } from 'react-router-dom';
+import GitHubHeatmap from './GitHubHeatmap';
 
 const Home = () => {
     const [user, setUser] = useState(null);
@@ -291,6 +292,13 @@ const Home = () => {
                                     </dl>
                                 </div>
                             </div>
+                        </div>
+                    )}
+                    
+                    {/* Add GitHub Contribution Heatmap */}
+                    {profile?.github_username && (
+                        <div className="mt-6">
+                            <GitHubHeatmap username={profile.github_username} />
                         </div>
                     )}
                 </div>

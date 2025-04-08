@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+import GitHubHeatmap from './GitHubHeatmap';
 
 const ViewProfile = () => {
     const { userId } = useParams();
@@ -263,6 +264,13 @@ const ViewProfile = () => {
                                         </dl>
                                     </div>
                                 </div>
+                            </div>
+                        )}
+                        
+                        {/* Add GitHub Contribution Heatmap */}
+                        {profile?.github_username && (
+                            <div className="mt-6">
+                                <GitHubHeatmap username={profile.github_username} />
                             </div>
                         )}
                     </div>
