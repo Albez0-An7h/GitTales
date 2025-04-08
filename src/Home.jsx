@@ -8,6 +8,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [githubUser, setGithubUser] = useState(null);
     const [pullRequests, setPullRequests] = useState([]);
+    const [totalPRCount, setTotalPRCount] = useState(0);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     
@@ -94,6 +95,7 @@ const Home = () => {
             }
             
             const prsData = await prsResponse.json();
+            setTotalPRCount(prsData.total_count);
             
             // For each PR, fetch additional details like merge status
             const detailedPrs = await Promise.all(
@@ -295,7 +297,12 @@ const Home = () => {
 
                 {/* Pull Requests Section */}
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-6">Your Recent Pull Requests</h2>
+                    <h2 className="text-xl font-bold text-gray-900 mb-6">
+                        Your Recent Pull Requests 
+                        <span className="ml-2 text-sm font-medium bg-indigo-100 text-indigo-800 py-1 px-2 rounded-full">
+                            {totalPRCount}
+                        </span>
+                    </h2>
 
                     {pullRequests.length === 0 ? (
                         <div className="bg-white shadow rounded-lg p-6 text-center">

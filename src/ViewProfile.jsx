@@ -7,6 +7,7 @@ const ViewProfile = () => {
     const [profile, setProfile] = useState(null);
     const [githubUser, setGithubUser] = useState(null);
     const [pullRequests, setPullRequests] = useState([]);
+    const [totalPRCount, setTotalPRCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -81,6 +82,7 @@ const ViewProfile = () => {
             }
             
             const prsData = await prsResponse.json();
+            setTotalPRCount(prsData.total_count);
             
             // For each PR, fetch additional details like merge status
             const detailedPrs = await Promise.all(
@@ -268,7 +270,12 @@ const ViewProfile = () => {
 
                 {/* Pull Requests Section */}
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Pull Requests</h2>
+                    <h2 className="text-xl font-bold text-gray-900 mb-6">
+                        Recent Pull Requests
+                        <span className="ml-2 text-sm font-medium bg-indigo-100 text-indigo-800 py-1 px-2 rounded-full">
+                            {totalPRCount}
+                        </span>
+                    </h2>
 
                     {pullRequests.length === 0 ? (
                         <div className="bg-white shadow rounded-lg p-6 text-center">
@@ -277,7 +284,7 @@ const ViewProfile = () => {
                     ) : (
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {pullRequests.map(pr => (
-                                <div key={pr.id} className="bg-white shadow rounded-lg overflow-hidden">
+                                <div key={pr.id} className={`${pr.merged ? 'bg-green-50' : 'bg-white'} shadow rounded-lg overflow-hidden`}>
                                     <div className="px-4 py-5 sm:p-6">
                                         <h3 className="text-lg font-medium text-gray-900 truncate mb-1">
                                             <a 
@@ -354,7 +361,7 @@ const ViewProfile = () => {
                                         {/* Add View Commits button */}
                                         <div className="mt-4 pt-3 border-t border-gray-100 text-right">
                                             <Link
-                                                to={`/commits/${pr.repository.owner}/${pr.repository.name}`}
+                                                to={`/commits/${pr.repository.owner}/${pr.repository.name}/${profile.github_username}`}
                                                 className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-100 rounded-md hover:bg-indigo-200"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

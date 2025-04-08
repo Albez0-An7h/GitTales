@@ -3,12 +3,13 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 
 const ViewCommits = () => {
-    const { owner, repo } = useParams();
+    const { owner, repo, username } = useParams();
     const [commits, setCommits] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [user, setUser] = useState(null);
     const [profile, setProfile] = useState(null);
+    const [viewedUsername, setViewedUsername] = useState(null);
     const navigate = useNavigate();
 
     // GitHub API token from environment variables
@@ -44,7 +45,12 @@ const ViewCommits = () => {
 
                     if (profileData) {
                         setProfile(profileData);
-                        fetchCommits(profileData.github_username);
+                        
+                        // If a username parameter is provided, use that (viewing someone else's commits)
+                        // Otherwise use the current user's GitHub username
+                        const githubUsername = username || profileData.github_username;
+                        setViewedUsername(githubUsername);
+                        fetchCommits(githubUsername);
                     } else {
                         // No profile found, redirect to profile page
                         navigate('/profile');
@@ -61,7 +67,7 @@ const ViewCommits = () => {
         };
 
         fetchUserData();
-    }, [navigate, owner, repo]);
+    }, [navigate, owner, repo, username]);
 
     const fetchCommits = async (githubUsername) => {
         if (!owner || !repo || !githubUsername) return;
@@ -104,12 +110,21 @@ const ViewCommits = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                     <h1 className="text-2xl font-bold text-gray-900">Repository Commits</h1>
                     <div className="flex items-center space-x-4">
-                        <Link
-                            to="/"
-                            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
-                        >
-                            Back to Dashboard
-                        </Link>
+                        {username ? (
+                            <Link
+                                to={`/view-profile/${user?.id}`}
+                                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                            >
+                                Back to Profile
+                            </Link>
+                        ) : (
+                            <Link
+                                to="/"
+                                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                            >
+                                Back to Dashboard
+                            </Link>
+                        )}
                     </div>
                 </div>
             </header>
@@ -123,11 +138,12 @@ const ViewCommits = () => {
 
                 <div className="bg-white shadow rounded-lg p-6 mb-8">
                     <h2 className="text-xl font-bold mb-4">
-                        Commits in <a href={`https://github.com/${owner}/${repo}`} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">{owner}/{repo}</a>
+                        Commits by <span className="text-indigo-600">@{viewedUsername}</span> in{' '}
+                        <a href={`https://github.com/${owner}/${repo}`} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">{owner}/{repo}</a>
                     </h2>
                     
                     {commits.length === 0 ? (
-                        <p className="text-gray-500">No commits found for {profile?.github_username} in this repository.</p>
+                        <p className="text-gray-500">No commits found for {viewedUsername} in this repository.</p>
                     ) : (
                         <div className="space-y-4">
                             {commits.map((commit) => (

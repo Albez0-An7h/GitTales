@@ -56,6 +56,7 @@ function App() {
             <Route path="/names" element={<NameList />} />
             <Route path="/view-profile/:userId" element={<ViewProfile />} />
             <Route path="/commits/:owner/:repo" element={<ViewCommits />} />
+            <Route path="/commits/:owner/:repo/:username" element={<ViewCommits />} />
             {/* Add this catch-all route at the end to handle 404s */}
             <Route path="*" element={<Error404 />} />
           </Routes>
